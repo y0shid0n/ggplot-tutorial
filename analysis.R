@@ -26,11 +26,22 @@ data <- sapply(files, myreadcsv) %>%
   mutate(現預金 = 現預金 + FX + ポイント) %>%
   select(-c(FX, ポイント)) %>%
   pivot_longer(-c(日付, 合計), names_to="type", values_to="value") %>%
+  mutate(rate = value / 合計) %>%
   mutate(type = factor(type, levels=c("株式", "投資信託", "現預金")))  # 描画の順序制御用
 
+# 面グラフ
 g <- ggplot(data=data) +
   geom_area(mapping = aes(x = 日付, y = value, group = type, colour = type, fill = type)) +
   scale_y_continuous(label = scales::comma) +  # y軸をカンマ区切りに
-  scale_x_date(date_breaks = "30 day", date_labels = "%Y/%m/%d") +  # x軸の目盛を減らす
+  # scale_x_date(date_breaks = "30 day", date_labels = "%Y/%m/%d") +  # x軸の目盛を減らす
+  scale_x_date(date_breaks = "1 month", date_labels = "%Y/%m/%d") +  # x軸の目盛を減らす
   theme(axis.text.x = element_text(angle = 45, hjust = 1))  # 目盛を斜めに
 plot(g)
+
+# 面グラフ（割合）
+g2 <- ggplot(data=data) +
+  geom_area(mapping = aes(x = 日付, y = rate, group = type, colour = type, fill = type)) +
+  scale_y_continuous(label = scales::percent) +  # y軸をパーセント表示に
+  scale_x_date(date_breaks = "1 month", date_labels = "%Y/%m/%d") +  # x軸の目盛を減らす
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))  # 目盛を斜めに
+plot(g2)
