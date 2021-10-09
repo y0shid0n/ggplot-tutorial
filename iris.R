@@ -15,9 +15,9 @@ g
 
 # バイオリン図
 g <- ggplot(data = iris, mapping = aes(x=Species, y=Sepal.Length, group=Species, colour=Species)) +
-  geom_violin() +
+  geom_violin(draw_quantiles = c(0.25, 0.5, 0.75)) +  # quantileを表示
   geom_point(position = position_jitter(width=0.1, height=0, seed=72))  # 点をずらして全て表示できるようにする
-  # geom_jitter(position = position_jitter(width=0.1, height=0, seed=72))
+  # geom_jitter(width=0.1, height=0)  # seed設定できない？
 plot(g)
 
 # 棒グラフ（mean±SE）
